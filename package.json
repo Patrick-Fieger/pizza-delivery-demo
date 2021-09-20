@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "serve-vue": "vue-cli-service serve",
-    "serve": "npm-run-all --parallel serve-vue backend-dev",
-    "start": "npm-run-all --parallel serve-vue backend-dev",
+    "serve": "vue-cli-service serve",
+    "postinstall": "npm run build",
+    "start": "node web-server.js",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "backend-dev": "nodemon bin/www"

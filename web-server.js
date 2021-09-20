@@ -8,9 +8,10 @@ const { join } = require("path");
 const authConfig = require("./auth_config.json");
 const bodyParser = require("body-parser");
 const axios = require("axios").default;
-require("dotenv").config();
-
+const port = process.env.PORT || 80;
 const app = express();
+
+require("dotenv").config();
 
 if (!authConfig.domain || !authConfig.audience) {
   throw "Please make sure that auth_config.json is in place and populated";
@@ -22,6 +23,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(join(__dirname, "dist")));
+
+app.listen(port, () => console.log(`Server listening on port ${port}`));
 
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
