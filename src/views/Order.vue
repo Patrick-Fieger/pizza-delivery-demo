@@ -83,7 +83,7 @@ export default {
         {pizzaName: "Pugliese", pizzaId: 10},
         {pizzaName: "Montanara", pizzaId: 11}
       ],
-      order_history: this.$auth.user[location.origin + "/order_history"] || null,
+      order_history: this.$auth.user[location.origin + "/order_history"] || [],
       order: []
     };
   },
