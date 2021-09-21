@@ -39,7 +39,7 @@
         <button class="btn btn-primary" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="placeOrder">Place Order</button>
       </div>
 
-      <button v-if="!$auth.isAuthenticated" @click="login" id="qsLoginBtn" class="btn btn-primary btn-margin">Login to place an order!</button>
+      <button v-if="!$auth.isAuthenticated && !$auth.loading" @click="login" id="qsLoginBtn" class="btn btn-primary btn-margin">Login to place an order!</button>
     </div>
   </div>
 </template>
