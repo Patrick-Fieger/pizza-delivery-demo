@@ -157,8 +157,7 @@ export default {
         
         alert(data);
       } catch (e) {
-        this.apiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
-        alert(this.apiMessage);
+        alert(`Error: the server responded with '${e.response.status}: ${e.response.statusText} ${JSON.stringify(e)}'`);
       }
     },
     async placeOrder() {
@@ -178,8 +177,8 @@ export default {
         this.order_history = orders;
 
         alert(data);
-      } catch (e) {
-        alert(`Error: the server responded with '${e.response.status}: ${e.response.statusText}'`);
+      } catch (e) {      
+        alert(e.response.data || `Error: the server responded with '${e.response.status}: ${e.response.statusText} ${JSON.stringify(e.response.data)}`);
       }
     }
   }
