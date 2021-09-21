@@ -17,7 +17,7 @@
       <ul class="hover">
         <li v-for="piz in pizza" :key="piz.pizzaId">
           {{piz.pizzaName}}
-          <button class="simple" @click="addPizza(piz.pizzaName,piz.pizzaId)">Add to cart</button>
+          <button v-if="$auth.isAuthenticated" class="simple" @click="addPizza(piz.pizzaName,piz.pizzaId)">Add to cart</button>
         </li>
       </ul>
 
@@ -38,6 +38,8 @@
 
         <button class="btn btn-primary" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="placeOrder">Place Order</button>
       </div>
+
+      <button v-if="!$auth.isAuthenticated" @click="login" id="qsLoginBtn" class="btn btn-primary btn-margin">Login to place an order!</button>
     </div>
   </div>
 </template>
@@ -66,6 +68,7 @@
     width: 100%;
     float: left
   }
+  
   li{
     list-style: none;
     width: 100%;
@@ -89,7 +92,6 @@
   .btn-primary:focus{
     background-color: #000 !important;
     border-color: #000 !important;
-
   }
 
   li button{
@@ -115,11 +117,21 @@ export default {
         {pizzaName: "Pugliese", pizzaId: 10},
         {pizzaName: "Montanara", pizzaId: 11}
       ],
-      order_history: this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [],
+      order_history: [],
       order: []
     };
   },
+  mounted () {
+    if(this.$auth.isAuthenticated){
+      this.order_history = this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [];
+    }
+  },
   methods: {
+    login(){
+      this.$auth.loginWithRedirect({
+        redirect_uri: location.origin + "/order"
+      });
+    },
     addPizza(pizzaName, pizzaId){
       this.order.push({
         pizzaName,

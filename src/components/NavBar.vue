@@ -20,7 +20,8 @@
             <li class="nav-item">
               <router-link to="/" class="nav-link">Home</router-link>
             </li>
-            <li class="nav-item" v-if="$auth.isAuthenticated">
+            <!-- v-if="$auth.isAuthenticated" -->
+            <li class="nav-item"> 
               <router-link to="/order" class="nav-link">Order Pizza</router-link>
             </li>
           </ul>
@@ -122,5 +123,16 @@ export default {
 
 .navbar .router-link-exact-active{
   border-color: #000;
+}
+
+.btn-primary{
+  background-color: #000 !important;
+  border-color: #000 !important;
+}
+
+.btn-primary:active,
+.btn-primary:focus{
+  background-color: #000 !important;
+  border-color: #000 !important;
 }
 </style>

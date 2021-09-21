@@ -25,8 +25,7 @@ const router = new Router({
     {
       path: "/order",
       name: "order",
-      component: Order,
-      beforeEnter: authGuard
+      component: Order
     }
   ]
 });
