@@ -39,13 +39,13 @@ const checkJwt = jwt({
   algorithms: ["RS256"]
 });
 
-const checkPermission = (req,res,next) =>{
+const checkPermission = (req, res, next) =>{
   const permisson = "update:current_user_metadata";
 
   if(req.user.permissions.indexOf(permisson) > -1){
     next();
   }else{
-    res.status(403);
+    res.status(403).send("You are not allowed to send an order! Please get permissions from Patrick Fieger!");
   }
 };
 
