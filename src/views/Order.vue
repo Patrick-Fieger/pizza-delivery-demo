@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="mb-5">
-      <div v-if="order_history.length > 0">
+      <div v-if="orderHistory.length > 0">
         <h2>Oder History</h2>
 
         <ul>
-          <li v-for="item in order_history" :key="item.pizzaId">
+          <li v-for="item in orderHistory" :key="item.pizzaId">
             {{item.pizzaName}}<br>
             {{item.date}}
           </li>
@@ -38,7 +38,6 @@
 
         <button class="btn btn-primary" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="placeOrder">Place Order</button>
       </div>
-
       <button v-if="!$auth.isAuthenticated && !$auth.loading" @click="login" id="qsLoginBtn" class="btn btn-primary btn-margin">Login to place an order!</button>
     </div>
   </div>
@@ -100,6 +99,8 @@
 </style>
 
 <script>
+import { getInstance } from "../auth/authWrapper";
+
 export default {
   name: "Order",
   data() {
@@ -117,16 +118,27 @@ export default {
         {pizzaName: "Pugliese", pizzaId: 10},
         {pizzaName: "Montanara", pizzaId: 11}
       ],
-      order_history: this.$auth.isAuthenticated ? this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [] : [],
-      order: []
+      orderHistory: [],
+      order: [],
     };
   },
-  // mounted () {
-  //   if(this.$auth.isAuthenticated){
-  //     this.order_history = this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [];
-  //   }
-  // },
+  created() {
+    this.init(this.loadUser);
+  },
   methods: {
+    init(fn) {
+      const instance = getInstance();
+      instance.$watch("loading", loading => {
+          if (loading === false) {
+              fn(instance);
+          }
+      });
+    },
+    async loadUser(instance) {
+      await instance.getTokenSilently().then(() => {
+        this.orderHistory = instance.isAuthenticated && instance.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [];
+      });
+    },
     login(){
       this.$auth.loginWithRedirect({
         redirect_uri: location.origin + "/order"
@@ -153,7 +165,7 @@ export default {
           } 
         });
 
-        this.order_history = [];
+        this.orderHistory = [];
         
         alert(data);
       } catch (e) {
@@ -162,7 +174,7 @@ export default {
     },
     async placeOrder() {
       const accessToken = await this.$auth.getTokenSilently();
-      const orders = this.order_history ? this.order_history.concat(this.order) : this.order;
+      const orders = this.orderHistory ? this.orderHistory.concat(this.order) : this.order;
 
       try {
         const { data } = await this.$http.patch("/place/order",{
@@ -174,7 +186,7 @@ export default {
         });
 
         this.order = [];
-        this.order_history = orders;
+        this.orderHistory = orders;
 
         alert(data);
       } catch (e) {      

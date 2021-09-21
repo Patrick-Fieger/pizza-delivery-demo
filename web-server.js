@@ -8,7 +8,7 @@ const { join } = require("path");
 const authConfig = require("./auth_config.json");
 const bodyParser = require("body-parser");
 const axios = require("axios").default;
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 const app = express();
 
 require("dotenv").config();
