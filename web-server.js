@@ -49,7 +49,23 @@ const checkPermission = (req,res,next) =>{
   }
 };
 
-app.post("/place/order", checkJwt, checkPermission, (req, res) => {
+app.patch("/remove/history", checkJwt, checkPermission, (req, res) => {
+
+  axios.patch(`https://${authConfig.domain}/api/v2/users/${req.user.sub}`,
+    { 
+      "user_metadata" : {
+        "order_history": null
+      }
+    },{
+      headers: {
+        Authorization: `Bearer ${process.env.MANAGEMENT_TOKEN}`
+    }
+  });
+
+  res.send("History cleared!");
+});
+
+app.patch("/place/order", checkJwt, checkPermission, (req, res) => {
 
   let orders = {
     "order_history": req.body.orders
@@ -62,7 +78,7 @@ app.post("/place/order", checkJwt, checkPermission, (req, res) => {
       headers: {
         Authorization: `Bearer ${process.env.MANAGEMENT_TOKEN}`
     }
-    });
+  });
 
   res.send("Order placed!");
 });

@@ -10,20 +10,23 @@
             {{item.date}}
           </li>
         </ul>
+
+        <button @click="removeHistory">Remove History</button>
       </div>
       <h2>Oder Pizza</h2>
       <ul>
         <li v-for="piz in pizza" :key="piz.pizzaId">
           {{piz.pizzaName}}
-          <button @click.prevent="addPizza(piz.pizzaName,piz.pizzaId)">Add to cart</button>
+          <button @click="addPizza(piz.pizzaName,piz.pizzaId)">Add to cart</button>
         </li>
       </ul>
 
       <div v-if="order.length > 0">
         <h2>Your order:</h2>
         <ul>
-          <li v-for="item in order" :key="item.pizzaId">
-            {{item.pizzaName}}
+          <li v-for="(item, index) in order" :key="item.pizzaId">
+            {{index+1}}. {{item.pizzaName}}
+            <button @click="order.splice(index, 1)">Remove</button>
           </li>
         </ul>
 
@@ -33,7 +36,7 @@
           Please validate your email before ordering.
         </p>
 
-        <button class="btn btn-primary mt-5" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="callApi">Place Order</button>
+        <button class="btn btn-primary mt-5" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="placeOrder">Place Order</button>
       </div>
     </div>
   </div>
@@ -68,8 +71,6 @@ export default {
   name: "Order",
   data() {
     return {
-      apiMessage: null,
-      executed: false,
       pizza: [
         {pizzaName: "Magharita", pizzaId: 1},
         {pizzaName: "Pizza Marinara", pizzaId: 2},
@@ -83,7 +84,7 @@ export default {
         {pizzaName: "Pugliese", pizzaId: 10},
         {pizzaName: "Montanara", pizzaId: 11}
       ],
-      order_history: this.$auth.user[location.origin + "/order_history"] || [],
+      order_history: this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [],
       order: []
     };
   },
@@ -95,13 +96,34 @@ export default {
         date: new Date().toISOString()
       });
     },
+    async removeHistory(){
+      if(!confirm("Do you really want to remove your history?")){
+        return false;
+      }
 
-    async callApi() {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      try {
+        const { data } = await this.$http.patch("/remove/history",{}, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          } 
+        });
+
+        this.order_history = [];
+        
+        alert(data);
+      } catch (e) {
+        this.apiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
+        alert(this.apiMessage);
+      }
+    },
+    async placeOrder() {
       const accessToken = await this.$auth.getTokenSilently();
       const orders = this.order_history ? this.order_history.concat(this.order) : this.order;
 
       try {
-        const { data } = await this.$http.post("/place/order",{
+        const { data } = await this.$http.patch("/place/order",{
             orders
           }, {
           headers: {
@@ -109,15 +131,12 @@ export default {
           } 
         });
 
-        this.apiMessage = data;
-        this.executed = true;
         this.order = [];
         this.order_history = orders;
 
-        alert(this.apiMessage);
+        alert(data);
       } catch (e) {
-        this.apiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
-        alert(this.apiMessage);
+        alert(`Error: the server responded with '${e.response.status}: ${e.response.statusText}'`);
       }
     }
   }
