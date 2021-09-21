@@ -11,22 +11,22 @@
           </li>
         </ul>
 
-        <button @click="removeHistory">Remove History</button>
+        <button class="simple" @click="removeHistory">Remove History</button>
       </div>
       <h2>Oder Pizza</h2>
-      <ul>
+      <ul class="hover">
         <li v-for="piz in pizza" :key="piz.pizzaId">
           {{piz.pizzaName}}
-          <button @click="addPizza(piz.pizzaName,piz.pizzaId)">Add to cart</button>
+          <button class="simple" @click="addPizza(piz.pizzaName,piz.pizzaId)">Add to cart</button>
         </li>
       </ul>
 
       <div v-if="order.length > 0">
         <h2>Your order:</h2>
-        <ul>
+        <ul class="hover">
           <li v-for="(item, index) in order" :key="item.pizzaId">
             {{index+1}}. {{item.pizzaName}}
-            <button @click="order.splice(index, 1)">Remove</button>
+            <button class="simple" @click="order.splice(index, 1)">Remove</button>
           </li>
         </ul>
 
@@ -36,13 +36,26 @@
           Please validate your email before ordering.
         </p>
 
-        <button class="btn btn-primary mt-5" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="placeOrder">Place Order</button>
+        <button class="btn btn-primary" :disabled="!$auth.user.email_verified || order.length === 0" @click.prevent="placeOrder">Place Order</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+  button.simple{
+    border: 2px solid #000;
+    border-radius: 3px;
+    background-color: transparent;
+    color: #000;
+    transition: all .3s;
+  }
+
+  button.simple:hover{
+    background-color: #000;
+    color: #fff
+  }
+
   h2{
     margin-top:20px
   }
@@ -58,7 +71,25 @@
     width: 100%;
     float: left;
     margin: 5px 0;
-    padding: 0
+    padding: 10px;
+    line-height: 20px;
+    transition: all .3s;
+  }
+
+  ul.hover li:hover{
+    background-color: #f8f8f8;
+  }
+
+  .btn-primary{
+    background-color: #000;
+    border-color: #000;
+  }
+
+  .btn-primary:active,
+  .btn-primary:focus{
+    background-color: #000 !important;
+    border-color: #000 !important;
+
   }
 
   li button{

@@ -11,7 +11,7 @@
       <div class="logo"></div>
       <p>
         Demo provided by
-        <a href="https://patrick-fieger.github.io/">Patrick Fieger</a>
+        <a href="https://patrick-fieger.github.io/" target="_blank">Patrick Fieger</a>
       </p>
     </footer>
   </div>

@@ -119,4 +119,8 @@ export default {
   min-height: 125px;
   justify-content: space-between;
 }
+
+.navbar .router-link-exact-active{
+  border-color: #000;
+}
 </style>
