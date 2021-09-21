@@ -117,15 +117,15 @@ export default {
         {pizzaName: "Pugliese", pizzaId: 10},
         {pizzaName: "Montanara", pizzaId: 11}
       ],
-      order_history: [],
+      order_history: this.$auth.isAuthenticated ? this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [] : [],
       order: []
     };
   },
-  mounted () {
-    if(this.$auth.isAuthenticated){
-      this.order_history = this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [];
-    }
-  },
+  // mounted () {
+  //   if(this.$auth.isAuthenticated){
+  //     this.order_history = this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [];
+  //   }
+  // },
   methods: {
     login(){
       this.$auth.loginWithRedirect({
