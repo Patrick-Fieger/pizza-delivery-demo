@@ -118,7 +118,7 @@ export default {
         {pizzaName: "Pugliese", pizzaId: 10},
         {pizzaName: "Montanara", pizzaId: 11}
       ],
-      orderHistory: [],
+      orderHistory: this.$auth.isAuthenticated && this.$auth.user["https://pizza-delivery-demo-pfieger.herokuapp.com/order_history"] || [],
       order: [],
     };
   },
