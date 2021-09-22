@@ -1,6 +1,5 @@
 # Pizza delivery demo
 
--
 
 ### Install and run the app localy
 
